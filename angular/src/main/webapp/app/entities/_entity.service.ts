@@ -113,12 +113,10 @@ export class <%= entityAngularName %>Service {
         const entity: <%= entityAngularName %> = Object.assign(new <%= entityAngularName %>(), json);
         <%_ for (idx in fields) { _%>
             <%_ if (fields[idx].fieldType === 'LocalDate') { _%>
-        entity.<%=fields[idx].fieldName%> = this.dateUtils
-            .convertLocalDateFromServer(json.<%=fields[idx].fieldName%>);
+        entity.<%=fields[idx].fieldName%> = this.dateUtils.convertLocalDateFromServer(json.<%=fields[idx].fieldName%>);
             <%_ } _%>
             <%_ if (['Instant', 'ZonedDateTime'].includes(fields[idx].fieldType)) { _%>
-        entity.<%=fields[idx].fieldName%> = this.dateUtils
-            .convertDateTimeFromServer(json.<%=fields[idx].fieldName%>);
+        entity.<%=fields[idx].fieldName%> = this.dateUtils.convertDateTimeFromServer(json.<%=fields[idx].fieldName%>);
             <%_ } _%>
         <%_ } _%>
         return entity;
@@ -130,10 +128,13 @@ export class <%= entityAngularName %>Service {
     private convert(<%= entityInstance %>: <%= entityAngularName %>): <%= entityAngularName %> {
         const copy: <%= entityAngularName %> = Object.assign({}, <%= entityInstance %>);
         <%_ for (idx in fields){ if (fields[idx].fieldType === 'LocalDate') { _%>
-        copy.<%=fields[idx].fieldName%> = this.dateUtils
-            .convertLocalDateToServer(<%= entityInstance %>.<%=fields[idx].fieldName%>);
+        copy.<%=fields[idx].fieldName%> = this.dateUtils.convertLocalDateToServer(<%= entityInstance %>.<%=fields[idx].fieldName%>);
         <%_ } if (['Instant', 'ZonedDateTime'].includes(fields[idx].fieldType)) { %>
-        copy.<%=fields[idx].fieldName%> = this.dateUtils.toDate(<%= entityInstance %>.<%=fields[idx].fieldName%>);
+                if (<%= entityInstance %>.<%=fields[idx].fieldName%>) {
+                    copy.<%= fields[idx].fieldName %> = this.dateUtils.toDate(new Date(<%= entityInstance %>.<%= fields[idx].fieldName %>).toISOString());
+                } else {
+                    copy.<%= fields[idx].fieldName %> = this.dateUtils.toDate(<%= entityInstance %>.<%= fields[idx].fieldName %>);
+                }
         <%_ } } _%>
         return copy;
     }

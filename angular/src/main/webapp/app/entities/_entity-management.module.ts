@@ -40,6 +40,11 @@ import {
     <%_ } _%>
 } from './';
 
+import {
+    MatCardModule, MatCheckboxModule, MatDatepickerModule, MatFormFieldModule,
+    MatInputModule, MatSelectModule
+} from '@angular/material';
+
 const ENTITY_STATES = [
     ...<%= entityInstance %>Route,
     ...<%= entityInstance %>PopupRoute,
@@ -52,7 +57,13 @@ const ENTITY_STATES = [
               if (key === 'User') { _%>
         <%= angularXAppName %>AdminModule,
         <%_ }}); _%>
-        RouterModule.forChild(ENTITY_STATES)
+        RouterModule.forChild(ENTITY_STATES),
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatCheckboxModule,
+        MatDatepickerModule,
+        MatSelectModule
     ],
     declarations: [
         <%= entityAngularName %>Component,
